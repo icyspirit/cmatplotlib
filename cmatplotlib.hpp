@@ -32,41 +32,56 @@ private:
         return s;
     }
 
+    void execute(const char* command) const
+    {
+        int errorCode = PyRun_SimpleString(command);
+        if (errorCode != 0) {
+            exit(errorCode);
+        }
+    }
+
+    void execute(const std::string& command) const
+    {
+        int errorCode = PyRun_SimpleString(command.c_str());
+        if (errorCode != 0) {
+            exit(errorCode);
+        }
+    }
+
 public:
     mpl()
     {
         Py_Initialize();
-        PyRun_SimpleString("import matplotlib.pyplot as plt");
+        execute("import matplotlib.pyplot as plt");
     }
 
     void plot(const std::vector<T>& x) const
     {
         std::string command = "plt.plot(" + toString(x) + ")";
-        PyRun_SimpleString(command.c_str());
+        execute(command.c_str());
     }
 
     void plot(const std::vector<T>& x, const std::vector<T>& y) const
     {
         std::string command = "plt.plot(" + toString(x) + "," + toString(y) + ")";
-        PyRun_SimpleString(command.c_str());
+        execute(command.c_str());
     }
 
     void contour(const std::vector<std::vector<T>>& z) const
     {
         std::string command = "plt.contour(" + toString(z) + ")";
-        PyRun_SimpleString(command.c_str());
-
+        execute(command.c_str());
     }
 
     void contour(const std::vector<T>& x, const std::vector<T>& y, const std::vector<std::vector<T>>& z) const
     {
         std::string command = "plt.contour(" + toString(x) + "," + toString(y) + "," + toString(z) + ")";
-        PyRun_SimpleString(command.c_str());
+        execute(command.c_str());
     }
 
     void show() const
     {
-        PyRun_SimpleString("plt.show()");
+        execute("plt.show()");
     }
 };
 
