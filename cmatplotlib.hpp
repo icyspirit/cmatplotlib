@@ -53,6 +53,8 @@ public:
     {
         Py_Initialize();
         execute("import matplotlib.pyplot as plt");
+        execute("import numpy as np");
+        execute("nan = np.nan");
     }
 
     void plot(const std::vector<T>& x) const
@@ -67,16 +69,21 @@ public:
         execute(command.c_str());
     }
 
-    void contour(const std::vector<std::vector<T>>& z) const
+    void contour(const std::vector<std::vector<T>>& z, const int& n = 10) const
     {
-        std::string command = "plt.contour(" + toString(z) + ")";
+        std::string command = "plt.contour(" + toString(z) + "," + std::to_string(n) + ")";
         execute(command.c_str());
     }
 
-    void contour(const std::vector<T>& x, const std::vector<T>& y, const std::vector<std::vector<T>>& z) const
+    void contour(const std::vector<T>& x, const std::vector<T>& y, const std::vector<std::vector<T>>& z, const int& n = 10) const
     {
-        std::string command = "plt.contour(" + toString(x) + "," + toString(y) + "," + toString(z) + ")";
+        std::string command = "plt.contour(" + toString(x) + "," + toString(y) + "," + toString(z) + "," + std::to_string(n) + ")";
         execute(command.c_str());
+    }
+
+    void scaled() const
+    {
+        execute("plt.axis('scaled')");
     }
 
     void show() const
