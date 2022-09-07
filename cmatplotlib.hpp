@@ -81,14 +81,22 @@ public:
         execute(command.c_str());
     }
 
-    void scaled() const
+    void pcolor(const std::vector<std::vector<T>>& z) const
     {
-        execute("plt.axis('scaled')");
+        std::string command = "plt.pcolor(" + toString(z) + ")";
+        execute(command.c_str());
     }
 
-    void show() const
+    void axis(const std::string s) const
     {
-        execute("plt.show()");
+        std::string command = "plt.axis('" + s + "')";
+        execute(command.c_str());
+    }
+
+    void show(const std::string s = "") const
+    {
+        std::string command = "plt.show(" + s + ")";
+        execute(command.c_str());
     }
 };
 
