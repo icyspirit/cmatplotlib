@@ -53,8 +53,7 @@ public:
     {
         Py_Initialize();
         execute("import matplotlib.pyplot as plt");
-        execute("import numpy as np");
-        execute("nan = np.nan");
+        execute("from numpy import nan");
     }
 
     void plot(const std::vector<T>& x) const
@@ -87,7 +86,13 @@ public:
         execute(command.c_str());
     }
 
-    void axis(const std::string s) const
+    void colorbar(const std::string s = "") const
+    {
+        std::string command = "plt.colorbar(" + s + ")";
+        execute(command.c_str());
+    }
+
+    void axis(const std::string s = "scaled") const
     {
         std::string command = "plt.axis('" + s + "')";
         execute(command.c_str());
