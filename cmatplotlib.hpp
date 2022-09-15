@@ -56,6 +56,12 @@ public:
         execute("from numpy import nan");
     }
 
+    void figure(const std::string s = "") const
+    {
+        std::string command = "plt.figure(" + s + ")";
+        execute(command.c_str());
+    }
+
     void plot(const std::vector<T>& x) const
     {
         std::string command = "plt.plot(" + toString(x) + ")";
@@ -65,6 +71,18 @@ public:
     void plot(const std::vector<T>& x, const std::vector<T>& y) const
     {
         std::string command = "plt.plot(" + toString(x) + "," + toString(y) + ")";
+        execute(command.c_str());
+    }
+
+    void scatter(const T& x, const T& y) const
+    {
+        std::string command = "plt.scatter(" + std::to_string(x) + "," + std::to_string(y) + ")";
+        execute(command.c_str());
+    }
+
+    void scatter(const std::vector<T>& x, const std::vector<T>& y) const
+    {
+        std::string command = "plt.scatter(" + toString(x) + "," + toString(y) + ")";
         execute(command.c_str());
     }
 
@@ -80,9 +98,27 @@ public:
         execute(command.c_str());
     }
 
+    void contourf(const std::vector<std::vector<T>>& z, const int& n = 10) const
+    {
+        std::string command = "plt.contourf(" + toString(z) + "," + std::to_string(n) + ")";
+        execute(command.c_str());
+    }
+
+    void contourf(const std::vector<T>& x, const std::vector<T>& y, const std::vector<std::vector<T>>& z, const int& n = 10) const
+    {
+        std::string command = "plt.contourf(" + toString(x) + "," + toString(y) + "," + toString(z) + "," + std::to_string(n) + ")";
+        execute(command.c_str());
+    }
+
     void pcolor(const std::vector<std::vector<T>>& z) const
     {
         std::string command = "plt.pcolor(" + toString(z) + ")";
+        execute(command.c_str());
+    }
+
+    void pcolor(const std::vector<T>& x, const std::vector<T>& y, const std::vector<std::vector<T>>& z) const
+    {
+        std::string command = "plt.pcolor(" + toString(x) + "," + toString(y) + "," + toString(z) + ")";
         execute(command.c_str());
     }
 
