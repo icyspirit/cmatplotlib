@@ -62,16 +62,7 @@ std::string to_string(const T& v)
     return ss.str();
 }
 
-
-GENFUNC(print);
-GENFUNC(plot);
-GENFUNC(plot3D);
-GENFUNC(scatter);
-GENFUNC(contour);
-GENFUNC(contourf);
-GENFUNC(pcolor);
-GENFUNC(figure);
-GENFUNC(show);
+#include "genfunc.hpp"
 
 };
 
