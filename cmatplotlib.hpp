@@ -2,143 +2,79 @@
 #ifndef CMATPLOTLIB_HPP
 #define CMATPLOTLIB_HPP
 
+
+#include <iomanip>
+#include <iterator>
+#include <sstream>
 #include <string>
 #include <vector>
+#include <utility>
 #include <Python.h>
 
-template<class T>
-class mpl
+
+#define GENFUNC(NAME) \
+template<typename... T> \
+void NAME(T... args) \
+{ \
+    py_execute(std::string(#NAME) + "(" + ("" + ... + (to_string(args) + ", ")) + ")"); \
+}
+
+
+namespace cmatplotlib {
+
+static bool initialized = false;
+
+
+static void py_execute(const std::string& command)
 {
-private:
-    std::string toString(const std::vector<T>& v) const
-    {
-        char buf[32];
-        std::string s = "[";
-        for (T _v : v) {
-            sprintf(buf, "%e,", _v);
-            s += buf;
-        }
-        s += "]";
-        return s;
-    }
-
-    std::string toString(const std::vector<std::vector<T>>& v) const
-    {
-        std::string s = "[";
-        for (std::vector<T> _v : v) {
-            s += toString(_v) + ",";
-        }
-        s += "]";
-        return s;
-    }
-
-    void execute(const char* command) const
-    {
-        int errorCode = PyRun_SimpleString(command);
-        if (errorCode != 0) {
-            exit(errorCode);
-        }
-    }
-
-    void execute(const std::string& command) const
-    {
-        int errorCode = PyRun_SimpleString(command.c_str());
-        if (errorCode != 0) {
-            exit(errorCode);
-        }
-    }
-
-public:
-    mpl()
-    {
+    if (!initialized) {
         Py_Initialize();
-        execute("import matplotlib.pyplot as plt");
-        execute("from numpy import nan");
+        PyRun_SimpleString("from matplotlib.pyplot import *");
+        PyRun_SimpleString("from numpy import *");
+        initialized = true;
     }
+    int errorCode = PyRun_SimpleString(command.c_str());
+    if (errorCode != 0) {
+        exit(errorCode);
+    }
+}
 
-    void figure(const std::string s = "") const
-    {
-        std::string command = "plt.figure(" + s + ")";
-        execute(command.c_str());
-    }
 
-    void plot(const std::vector<T>& x) const
-    {
-        std::string command = "plt.plot(" + toString(x) + ")";
-        execute(command.c_str());
+template<typename T>
+std::ostream& operator <<(std::ostream& os, const std::vector<T>& v)
+{
+    if constexpr (std::is_floating_point_v<T>) {
+        os << std::scientific;
     }
+    os << '[';
+    for (const T& v_: v) {
+        os << v_ << ',';
+    }
+    return os << ']';
+}
 
-    void plot(const std::vector<T>& x, const std::vector<T>& y) const
-    {
-        std::string command = "plt.plot(" + toString(x) + "," + toString(y) + ")";
-        execute(command.c_str());
-    }
 
-    void scatter(const T& x, const T& y) const
-    {
-        std::string command = "plt.scatter(" + std::to_string(x) + "," + std::to_string(y) + ")";
-        execute(command.c_str());
-    }
+template<typename T>
+std::string to_string(const T& v)
+{
+    std::ostringstream ss;
+    ss << v;
+    return ss.str();
+}
 
-    void scatter(const std::vector<T>& x, const std::vector<T>& y) const
-    {
-        std::string command = "plt.scatter(" + toString(x) + "," + toString(y) + ")";
-        execute(command.c_str());
-    }
 
-    void contour(const std::vector<std::vector<T>>& z, const int& n = 10) const
-    {
-        std::string command = "plt.contour(" + toString(z) + "," + std::to_string(n) + ")";
-        execute(command.c_str());
-    }
+GENFUNC(print);
+GENFUNC(plot);
+GENFUNC(plot3D);
+GENFUNC(scatter);
+GENFUNC(contour);
+GENFUNC(contourf);
+GENFUNC(pcolor);
+GENFUNC(figure);
+GENFUNC(show);
 
-    void contour(const std::vector<T>& x, const std::vector<T>& y, const std::vector<std::vector<T>>& z, const int& n = 10) const
-    {
-        std::string command = "plt.contour(" + toString(x) + "," + toString(y) + "," + toString(z) + "," + std::to_string(n) + ")";
-        execute(command.c_str());
-    }
-
-    void contourf(const std::vector<std::vector<T>>& z, const int& n = 10) const
-    {
-        std::string command = "plt.contourf(" + toString(z) + "," + std::to_string(n) + ")";
-        execute(command.c_str());
-    }
-
-    void contourf(const std::vector<T>& x, const std::vector<T>& y, const std::vector<std::vector<T>>& z, const int& n = 10) const
-    {
-        std::string command = "plt.contourf(" + toString(x) + "," + toString(y) + "," + toString(z) + "," + std::to_string(n) + ")";
-        execute(command.c_str());
-    }
-
-    void pcolor(const std::vector<std::vector<T>>& z) const
-    {
-        std::string command = "plt.pcolor(" + toString(z) + ")";
-        execute(command.c_str());
-    }
-
-    void pcolor(const std::vector<T>& x, const std::vector<T>& y, const std::vector<std::vector<T>>& z) const
-    {
-        std::string command = "plt.pcolor(" + toString(x) + "," + toString(y) + "," + toString(z) + ")";
-        execute(command.c_str());
-    }
-
-    void colorbar(const std::string s = "") const
-    {
-        std::string command = "plt.colorbar(" + s + ")";
-        execute(command.c_str());
-    }
-
-    void axis(const std::string s = "scaled") const
-    {
-        std::string command = "plt.axis('" + s + "')";
-        execute(command.c_str());
-    }
-
-    void show(const std::string s = "") const
-    {
-        std::string command = "plt.show(" + s + ")";
-        execute(command.c_str());
-    }
 };
 
+
 #endif
+

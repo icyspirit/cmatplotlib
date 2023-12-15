@@ -6,8 +6,8 @@ CXX = g++
 LINK = g++
 
 all:
-	$(CXX) -c driver.cpp -o driver.o `python3-config --cflags` -I../
-	$(LINK) -o driver driver.o -lpython3.10
+	$(CXX) -c driver.cpp -std=c++17 -o driver.o -fPIE `python3-config --cflags` -I../
+	$(LINK) -o driver driver.o -lpython3.8
 	./driver
 
 clean:
