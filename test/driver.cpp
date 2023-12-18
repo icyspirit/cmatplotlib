@@ -1,9 +1,10 @@
 
-
 #include <iostream>
 #include "cmatplotlib.hpp"
 
+
 using namespace cmatplotlib;
+
 
 int main()
 {
@@ -18,11 +19,12 @@ int main()
     legend();
 
     figure();
-    plot(x, y=y, label="hello");
+    plot(x, y=y, label=std::string("HELLO"));
     legend();
 
     figure();
     contour(x, y, z);
+    colorbar();
 
     figure();
     axes(projection="3d");
