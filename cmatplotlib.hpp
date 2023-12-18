@@ -40,7 +40,7 @@ struct kwarg {
 
 
 template<typename T>
-inline std::vector<T> to_vector(const T* v, size_t n)
+inline std::vector<T> to_vector(const T* const v, size_t n)
 {
     return std::vector(v, v + n);
 }

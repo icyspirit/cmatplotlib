@@ -3,11 +3,19 @@
 .PHONY: all test clean
 
 CXX = g++
-LINK = g++
+LINK = $(CXX)
+CFLAGS = -std=c++17 `python3-config --includes` -I../
+LDFLAGS = `python3-config --ldflags --embed`
 
-all:
-	$(CXX) -c driver.cpp -std=c++17 -o driver.o -fPIE `python3-config --cflags` -I../
-	$(LINK) -o driver driver.o -lpython3.8
+%.o: %.cpp ../cmatplotlib.hpp
+	$(CXX) -o $@ -c $< $(CFLAGS)
+
+all: driver
+
+driver: driver.o
+	$(LINK) -o $@ $^ $(LDFLAGS)
+
+run: driver
 	./driver
 
 clean:
