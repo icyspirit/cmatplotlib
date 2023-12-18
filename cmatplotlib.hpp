@@ -12,15 +12,6 @@
 #include <Python.h>
 
 
-template<typename T>
-struct IsStringLiteral :
-    std::is_same<
-        T,
-        std::add_lvalue_reference_t<const char[std::extent_v<std::remove_reference_t<T>>]>
-    >
-{};
-
-
 #define GENFUNC(NAME) \
 template<typename... T> \
 void NAME(T... args) \
