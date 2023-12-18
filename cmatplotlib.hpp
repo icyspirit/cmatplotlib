@@ -3,12 +3,12 @@
 #define CMATPLOTLIB_HPP
 
 
-#include <iomanip>
-#include <iterator>
+#include <ios>
+#include <ostream>
 #include <sstream>
 #include <string>
+#include <type_traits>
 #include <vector>
-#include <utility>
 #include <Python.h>
 
 
@@ -40,7 +40,14 @@ struct kwarg {
 
 
 template<typename T>
-std::ostream& operator <<(std::ostream& os, const std::vector<T>& v)
+inline std::vector<T> to_vector(const T* v, size_t n)
+{
+    return std::vector(v, v + n);
+}
+
+
+template<typename T>
+static std::ostream& operator <<(std::ostream& os, const std::vector<T>& v)
 {
     if constexpr (std::is_floating_point_v<T>) {
         os << std::scientific;

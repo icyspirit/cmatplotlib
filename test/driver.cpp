@@ -12,6 +12,8 @@ int main()
     std::vector<double> y{2, 4, 6};
     std::vector<std::vector<double>> z = {{1, 2, 3}, {2, 3, 4}, {3, 4, 5}};
 
+    double* w = new double[5]{1, 2, 3, 4, 5};
+
     print(x, y);
 
     figure();
@@ -21,6 +23,9 @@ int main()
     figure();
     plot(x, y=y, label=std::string("HELLO"));
     legend();
+
+    figure();
+    plot(to_vector(w, 5));
 
     figure();
     contour(x, y, z);
