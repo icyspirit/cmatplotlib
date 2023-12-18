@@ -7,7 +7,7 @@ LINK = $(CXX)
 CFLAGS = -std=c++17 `python3-config --includes` -I../
 LDFLAGS = `python3-config --ldflags --embed`
 
-%.o: %.cpp ../cmatplotlib.hpp
+%.o: %.cpp ../*.hpp
 	$(CXX) -o $@ -c $< $(CFLAGS)
 
 all: driver

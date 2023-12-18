@@ -16,7 +16,7 @@
 template<typename... T> \
 void NAME(T... args) \
 { \
-    py_execute(std::string(#NAME) + "(" + ("" + ... + (to_string(args) + ", ")) + ")"); \
+    py_execute(std::string(NAMESPACE) + "." + std::string(#NAME) + "(" + ("" + ... + (to_string(args) + ", ")) + ")"); \
 }
 
 
@@ -69,6 +69,14 @@ std::string to_string(const T& v)
 }
 
 
+std::string to_string(const char v)
+{
+    std::ostringstream ss;
+    ss << "\"" << v << "\"";
+    return ss.str();
+}
+
+
 std::string to_string(const char* v)
 {
     std::ostringstream ss;
@@ -90,29 +98,28 @@ std::string to_string(const kwarg& v)
 
 
 namespace cmatplotlib {
+    #include "genkwarg.hpp"
 
-    GENKWARG(label)
-    GENKWARG(projection)
-    GENKWARG(y)
+    namespace pyplot {
+        static std::string NAMESPACE = "matplotlib.pyplot";
+        static bool initialized = false;
 
-    static bool initialized = false;
-
-    static void py_execute(const std::string& command)
-    {
-        if (!initialized) {
-            Py_Initialize();
-            PyRun_SimpleString("from matplotlib.pyplot import *");
-            PyRun_SimpleString("from numpy import *");
-            initialized = true;
+        static void py_execute(const std::string& command)
+        {
+            if (!initialized) {
+                Py_Initialize();
+                PyRun_SimpleString(("import " + NAMESPACE).c_str());
+                PyRun_SimpleString("from numpy import nan");
+                initialized = true;
+            }
+            int err = PyRun_SimpleString(command.c_str());
+            if (err != 0) {
+                exit(err);
+            }
         }
-        int errorCode = PyRun_SimpleString(command.c_str());
-        if (errorCode != 0) {
-            exit(errorCode);
-        }
+
+        #include "genfunc.hpp"
     }
-
-    #include "genfunc.hpp"
-
 };
 
 
