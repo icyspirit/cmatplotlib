@@ -24,15 +24,19 @@ void NAME(T... args) \
 namespace kwargs { \
 struct NAME { \
     template<typename T> \
-    std::string operator =(const T& v) const \
+    kwarg operator =(const T& v) const \
     { \
-        std::ostringstream ss; \
-        ss << #NAME << "=" << to_string(v) ; \
-        return ss.str(); \
+        return kwarg{#NAME, to_string(v)}; \
     } \
 }; \
 } \
 static const kwargs::NAME NAME;
+
+
+struct kwarg {
+    std::string key;
+    std::string value;
+};
 
 
 template<typename T>
@@ -63,6 +67,18 @@ std::string to_string(const char* v)
     std::ostringstream ss;
     ss << "\"" << v << "\"";
     return ss.str();
+}
+
+
+std::string to_string(const std::string& v)
+{
+    return "\"" + v + "\"";
+}
+
+
+std::string to_string(const kwarg& v)
+{
+    return "**{'" + v.key + "':" + v.value + "}";
 }
 
 
